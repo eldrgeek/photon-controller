@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-
+import RadioButton from "./components/AnotherRadioButton"
 import Button from "./components/Button"
 import PhotonSlider from "./components/Slider"
 // class Button extends React.Component {
 
 
 let colors = {
-    sending: "yellow",
-    ready: "green",
-    error: "red"
+    sending: "pending",
+    ready: "success",
+    error: "error",
+    radio1: true
   };
 class App extends Component {
   constructor(props) {
@@ -20,20 +21,20 @@ class App extends Component {
       onPressed: "ready",
       offPresssed: "ready"
     };
-    this.sendDcc("on");
-    setTimeout ( (() => this.sendDcc("off")), 1000)
+    this.sendDcc("headlight","on");
+    setTimeout ( (() => this.sendDcc("headlight","off")), 1000)
     
   }
   getColor(command){
     return colors[command] || "red"
   }
-  sendDcc(command) {
-    return this.sendWithArgs("dcc", command)
+  sendDcc(operation, command) {
+    return this.sendWithArgs("dcc", operation, command)
   }
-  sendWithArgs(type, command) {
+  sendWithArgs(type, operation, command) {
     console.log("pressed", command);
     fetch(`https://api.particle.io/v1/devices/2d0028000b47353235303037/${type}Command`, {
-            body: `arg=headlight,${command}&access_token=7272794e183736c5a14dce7ebd8ace2fb6fe5e56`,
+            body: `arg=${operation},${command}&access_token=7272794e183736c5a14dce7ebd8ace2fb6fe5e56`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded"
             },
@@ -52,15 +53,39 @@ class App extends Component {
     
     return <div>
       <Button content="New Way" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("on")}
+      this.setState({onPressed:"sending"});this.sendDcc("headlight", "on")}
       } 
       variant={this.getColor(this.state.onPressed)} />
 <Button content="New Off" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("off")}
+      this.setState({onPressed:"sending"});this.sendDcc("headlight", "off")}
+      } 
+      variant={this.getColor(this.state.onPressed)} />
+<Button content="FWD 20" onClick={() => {
+      this.setState({onPressed:"sending"});this.sendDcc("fwd128", "14")}
+      } 
+      variant={this.getColor(this.state.onPressed)} />
+<Button content="REV 20" onClick={() => {
+      this.setState({onPressed:"sending"});this.sendDcc("rev128", "14")}
+      } 
+      variant={this.getColor(this.state.onPressed)} />
+<Button content="FWD 0" onClick={() => {
+      this.setState({onPressed:"sending"});this.sendDcc("fwd128", "0")}
+      } 
+      variant={this.getColor(this.state.onPressed)} />
+<Button content="REV 0" onClick={() => {
+      this.setState({onPressed:"sending"});this.sendDcc("rev128", "0")}
       } 
       variant={this.getColor(this.state.onPressed)} />
 
-          <PhotonSlider />
+<RadioButton content="REV 0" checked={this.state.radio1} onChange={() => {
+       console.log("Radio",this.state.radio1)                                                           
+      this.setState({radio1: !this.state.radio1})}
+      } 
+       />
+
+<PhotonSlider max={126} onAfterChange={() => {
+      this.sendDcc("fwd128", "")}
+      } />
         </div>
   }    
 
