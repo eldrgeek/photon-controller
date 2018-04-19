@@ -32,6 +32,12 @@ button, .radio {
   cursor: pointer;
 }
 
+.radio {
+  padding-top: 10px;
+    height: 30px;
+    color: beige;
+    background: brown;
+}
 .error {
   background: red;
 }

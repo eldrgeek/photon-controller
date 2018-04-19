@@ -52,40 +52,42 @@ class App extends Component {
   render() {
     
     return <div>
-      <Button content="New Way" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("headlight", "on")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
-<Button content="New Off" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("headlight", "off")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
-<Button content="FWD 20" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("fwd128", "14")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
-<Button content="REV 20" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("rev128", "14")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
-<Button content="FWD 0" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("fwd128", "0")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
-<Button content="REV 0" onClick={() => {
-      this.setState({onPressed:"sending"});this.sendDcc("rev128", "0")}
-      } 
-      variant={this.getColor(this.state.onPressed)} />
+              <Button content="New Way" onClick={() => {
+                  this.setState({onPressed:"sending"});this.sendDcc("headlight", "on")}
+                  } 
+                  variant={this.getColor(this.state.onPressed)} />
+              <Button content="New Off" onClick={() => {
+                    this.setState({onPressed:"sending"});this.sendDcc("headlight", "off")}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
+              <Button content="FWD 20" onClick={() => {
+                    this.setState({onPressed:"sending"});this.sendDcc("fwd128", "14")}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
+              <Button content="REV 20" onClick={() => {
+                    this.setState({onPressed:"sending"});this.sendDcc("rev128", "14")}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
+              <Button content="FWD 0" onClick={() => {
+                    this.setState({onPressed:"sending"});this.sendDcc("fwd128", "0")}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
+              <Button content="REV 0" onClick={() => {
+                    this.setState({onPressed:"sending"});this.sendDcc("rev128", "0")}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
 
-<RadioButton content="REV 0" checked={this.state.radio1} onChange={() => {
-       console.log("Radio",this.state.radio1)                                                           
-      this.setState({radio1: !this.state.radio1})}
-      } 
-       />
+              <RadioButton content="REV 0" checked={this.state.radio1} onChange={() => {
+                     console.log("Radio",this.state.radio1)                                                           
+                    this.setState({radio1: !this.state.radio1})
+                    }
+                    } 
+                     />
 
-<PhotonSlider max={126} onAfterChange={() => {
-      this.sendDcc("fwd128", "")}
-      } />
+              <PhotonSlider max={126} onAfterChange={(val) => {
+                    console.log("PhotonSlider::onAfterChange() value=",val)
+                    this.sendDcc("fwd128", val.toString())
+                    }} />
         </div>
   }    
 

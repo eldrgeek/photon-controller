@@ -26,12 +26,22 @@ const handle = (props) => {
   );
 };
 
+
+
 class PhotonSlider extends React.Component {
-  render () {
-  return <div style={style}>
-    <Slider vertical step={1} defaultValue={0} handle={handle}/>
-    
-  </div>;
+  render() {
+    const { 
+      onAfterChange,
+      ...others
+    } = this.props;
+    return <div style={style}>
+      <Slider vertical step={1} defaultValue={0} handle={handle} max={this.props.max} 
+        onAfterChange={onAfterChange} {...others}/>
+      </div>;
+  }
+  
+  f(v) {
+    console.log("Slider value",v)
   }
 }
   
