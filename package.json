@@ -15,7 +15,9 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-scripts": "0.9.5",
-    "rc-slider": "^8.6.1"
+    "rc-slider": "^8.6.1",
+    "react-radio-group": "^3.0.2"
+
   },
   "engines": {
     "node": "6.9.x"

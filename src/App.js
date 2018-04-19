@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import './App.css';
 
+import RadioButtons from "./components/RadioButtons"
+
+
 import RadioButton from "./components/AnotherRadioButton"
 import Button from "./components/Button"
 import PhotonSlider from "./components/Slider"
@@ -12,15 +15,23 @@ let colors = {
     sending: "pending",
     ready: "success",
     error: "error",
-    radio1: true
   };
+
+let buttons = [
+      {label:"Forward",value:"fwd"},
+      {label:"Reverse", value: "reverse"}
+    ];
+
+    
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       onPressed: "ready",
-      offPresssed: "ready"
-    };
+      offPresssed: "ready",
+      direction: "fwd"
+  };
+    
     this.sendDcc("headlight","on");
     setTimeout ( (() => this.sendDcc("headlight","off")), 1000)
     
@@ -50,7 +61,10 @@ class App extends Component {
       })
   }
   render() {
-    
+    let handleChange = (value) => {
+      console.log("Change value to " + value )
+      this.setState({direction:value})
+    }
     return <div>
               <Button content="New Way" onClick={() => {
                   this.setState({onPressed:"sending"});this.sendDcc("headlight", "on")}
@@ -77,17 +91,19 @@ class App extends Component {
                     } 
                     variant={this.getColor(this.state.onPressed)} />
 
-              <RadioButton content="REV 0" checked={this.state.radio1} onChange={() => {
-                     console.log("Radio",this.state.radio1)                                                           
-                    this.setState({radio1: !this.state.radio1})
-                    }
-                    } 
-                     />
+              <RadioButtons
+                  buttons={buttons}
+                  selectedValue={this.state.direction}
+                  onChange={handleChange}
+              />
 
               <PhotonSlider max={126} onAfterChange={(val) => {
                     console.log("PhotonSlider::onAfterChange() value=",val)
-                    this.sendDcc("fwd128", val.toString())
-                    }} />
+                    if (this.state.direction==="fwd") {
+                      this.sendDcc("fwd128", val.toString()) 
+                    }else{   
+                      this.sendDcc("rev128", val.toString()) 
+                    }}} />
         </div>
   }    
 
