@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 import RadioButtons from "./components/RadioButtons"
-
-
-import RadioButton from "./components/AnotherRadioButton"
 import Button from "./components/Button"
 import PhotonSlider from "./components/Slider"
 // class Button extends React.Component {
@@ -22,6 +19,15 @@ let buttons = [
       {label:"Reverse", value: "reverse"}
     ];
 
+let group1Bits = {
+    F1: 1,
+    F2: 2,
+    F3: 4,
+    F4: 8,
+    F0: 16
+}
+
+
     
 class App extends Component {
   constructor(props) {
@@ -29,19 +35,25 @@ class App extends Component {
     this.state = {
       onPressed: "ready",
       offPresssed: "ready",
-      direction: "fwd"
+      direction: "fwd",
+      group1: 0,
+      group2: 0,
+      group3: 0
   };
     
-    this.sendDcc("headlight","on");
-    setTimeout ( (() => this.sendDcc("headlight","off")), 1000)
+    this.sendDcc("7","16");
+    setTimeout ( (() => this.sendDcc("7","0")), 1000)
     
   }
+  
   getColor(command){
     return colors[command] || "red"
   }
+  
   sendDcc(operation, command) {
     return this.sendWithArgs("dcc", operation, command)
   }
+  
   sendWithArgs(type, operation, command) {
     console.log("pressed", command);
     fetch(`https://api.particle.io/v1/devices/2d0028000b47353235303037/${type}Command`, {
@@ -60,29 +72,48 @@ class App extends Component {
     this.setState({[command + "Pressed"]:"error"})
       })
   }
+  
   render() {
     let handleChange = (value) => {
       console.log("Change value to " + value )
       this.setState({direction:value})
     }
+    console.log("Constructed state Group1: "+this.state.group1)
     return <div>
-              <Button content="New Way" onClick={() => {
-                  this.setState({onPressed:"sending"});this.sendDcc("headlight", "on")}
-                  } 
-                  variant={this.getColor(this.state.onPressed)} />
-              <Button content="New Off" onClick={() => {
-                    this.setState({onPressed:"sending"});this.sendDcc("headlight", "off")}
+              
+                <Button content="Headlight (F0) ON" onClick={() => {
+                    this.setState({onPressed:"sending"});
+                    this.setState({group1: this.state.group1 | group1Bits.F0})
+                    this.sendDcc("7", this.state.group1.toString())
+                    console.log("Sending Group1 on State:"+this.state.group1)}
                     } 
                     variant={this.getColor(this.state.onPressed)} />
-              <Button content="FWD 20" onClick={() => {
-                    this.setState({onPressed:"sending"});this.sendDcc("fwd128", "14")}
+              
+                <Button content="Headlight (F0) OFF" onClick={() => {
+                    this.setState({onPressed:"sending"});
+                    this.setState({group1: this.state.group1 & ~group1Bits.F0})
+                    this.sendDcc("7", this.state.group1.toString())
+                    console.log("Sending Group1 off State:"+this.state.group1)}
                     } 
                     variant={this.getColor(this.state.onPressed)} />
-              <Button content="REV 20" onClick={() => {
-                    this.setState({onPressed:"sending"});this.sendDcc("rev128", "14")}
+              
+                <Button content="F1 ON" onClick={() => {
+                    this.setState({onPressed:"sending"});
+                    this.setState({group1: this.state.group1 | group1Bits.F1})
+                    this.sendDcc("7", this.state.group1.toString())
+                    console.log("Sending Group1 on State:"+this.state.group1)}
                     } 
                     variant={this.getColor(this.state.onPressed)} />
-              <Button content="FWD 0" onClick={() => {
+              
+                <Button content="F1 OFF" onClick={() => {
+                    this.setState({onPressed:"sending"});
+                    this.setState({group1: this.state.group1 & ~group1Bits.F1})
+                    this.sendDcc("7", this.state.group1.toString())
+                    console.log("Sending Group1 off State:"+this.state.group1)}
+                    } 
+                    variant={this.getColor(this.state.onPressed)} />
+              
+                <Button content="FWD 0" onClick={() => {
                     this.setState({onPressed:"sending"});this.sendDcc("fwd128", "0")}
                     } 
                     variant={this.getColor(this.state.onPressed)} />
@@ -100,10 +131,14 @@ class App extends Component {
               <PhotonSlider max={126} onAfterChange={(val) => {
                     console.log("PhotonSlider::onAfterChange() value=",val)
                     if (this.state.direction==="fwd") {
-                      this.sendDcc("fwd128", val.toString()) 
+                      this.sendDcc("4", val.toString())
+                      console.log("Forward 128: "+val) 
                     }else{   
-                      this.sendDcc("rev128", val.toString()) 
+                      this.sendDcc("3", val.toString())
+                      console.log("Reverse 128: "+val)
                     }}} />
+
+
         </div>
   }    
 
